@@ -181,10 +181,21 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			exit 1
 		fi
 
-		echo
-		echo 'MySQL init process done. Ready for start up.'
-		echo
+		file_env 'INIT_ONLY'
+		if [ -z "$INIT_ONLY" ]; then
+			echo
+			echo 'MySQL init process done. Ready for start up.'
+			echo
+		else
+			echo
+			echo 'MySQL init process done. Exiting.'
+			echo
+			exit 0
+		fi
 	fi
 fi
 
-exec "$@"
+file_env 'INIT_ONLY'
+if [ -z "$INIT_ONLY" ]; then
+	exec "$@"
+fi
